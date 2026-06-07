@@ -1,0 +1,6 @@
+.git
+.gitignore
+*.md
+workspace/
+build.sh
+run.sh
