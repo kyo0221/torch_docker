@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nano \
     htop \
     xsel \
+    bash-completion \
     build-essential \
     cmake \
     pkg-config \
@@ -101,6 +102,10 @@ RUN rosdep update --rosdistro ${ROS_DISTRO}
 
 # Keep the ROS environment loaded for interactive shells.
 RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
+
+# Enable bash-completion for interactive shells (the block in Ubuntu's default
+# /etc/bash.bashrc is commented out, so source it explicitly).
+RUN echo "[ -f /usr/share/bash-completion/bash_completion ] && source /usr/share/bash-completion/bash_completion" >> /etc/bash.bashrc
 
 # --- Python / PyTorch (CUDA 12.6 build) ----------------------------------
 RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel \

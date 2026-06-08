@@ -1,0 +1,9 @@
+# Incremental layer on top of the already-published image.
+# Building FROM the existing tag means only this one thin layer (bash-completion)
+# is new, so `docker push` re-uploads just a few MB instead of the whole image.
+FROM kyo0221/cudagl:12.6.0-devel-ubuntu22.04-torch-humble
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash-completion \
+    && echo "[ -f /usr/share/bash-completion/bash_completion ] && source /usr/share/bash-completion/bash_completion" >> /etc/bash.bashrc \
+    && rm -rf /var/lib/apt/lists/*
