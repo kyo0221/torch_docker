@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Image name/tag and container name (override via environment variables).
-IMAGE_NAME="${IMAGE_NAME:-cuda12.6-devel-ubuntu22.04-torch-humble}"
+IMAGE_NAME="${IMAGE_NAME:-cuda12.8-devel-ubuntu22.04-torch-humble}"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 CONTAINER_NAME="${CONTAINER_NAME:-torch_humble}"
 

@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.8.1-devel-ubuntu22.04
 
 # --- Environment ---------------------------------------------------------
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -97,6 +97,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-ign \
     && rm -rf /var/lib/apt/lists/*
 
+# --- ros2_control for Gazebo (gz_ros2_control plugin) ---------------------
+# The simulator actuates the caster (driven) wheel through the
+# `gz_ros2_control-system` plugin + a controller_manager spawner. Without
+# these packages Gazebo fails to load the plugin and the launch aborts with
+# "package 'controller_manager' not found". ros-humble-gz-ros2-control pulls
+# in controller_manager / ros2_control; ros2-controllers provides the
+# position_controllers used for the caster_yaw joint.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-humble-gz-ros2-control \
+    ros-humble-controller-manager \
+    ros-humble-ros2-controllers \
+    && rm -rf /var/lib/apt/lists/*
+
 # Pre-populate rosdep so `rosdep install` works out of the box.
 RUN rosdep update --rosdistro ${ROS_DISTRO}
 
@@ -107,11 +120,11 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
 # /etc/bash.bashrc is commented out, so source it explicitly).
 RUN echo "[ -f /usr/share/bash-completion/bash_completion ] && source /usr/share/bash-completion/bash_completion" >> /etc/bash.bashrc
 
-# --- Python / PyTorch (CUDA 12.6 build) ----------------------------------
+# --- Python / PyTorch (CUDA 12.8 build) ----------------------------------
 RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel \
     && python3 -m pip install --no-cache-dir --ignore-installed \
     torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 \
-    --index-url https://download.pytorch.org/whl/cu126
+    --index-url https://download.pytorch.org/whl/cu128
 
 WORKDIR /workspace
 CMD ["bash"]
